@@ -18,15 +18,27 @@ products.get('/:id', rescue(async (req, res) => {
 }));
 
 products.post('/', 
-  rescue(middlewares.validateName),
-  rescue(middlewares.validateQuantity),
+  middlewares.validateName,
+  middlewares.validateQuantity,
   rescue(async (req, res) => {
-      const { name, quantity } = req.body;
+    const { name, quantity } = req.body;
 
-      const result = await productsService.create(name, quantity);
-      console.log(result);
+    const result = await productsService.create(name, quantity);
+    console.log(result);
 
-      res.status(201).json(result);
-  }));
+    res.status(201).json(result);
+}));
+
+products.put('/:id',
+  middlewares.validateName,
+  middlewares.validateQuantity,
+  rescue(async (req, res) => {
+    const { name, quantity } = req.body;
+    const { id } = req.params;
+
+    const result = await productsService.update(name, quantity, id);
+    
+    res.status(200).json(result);
+}));
 
 module.exports = products;

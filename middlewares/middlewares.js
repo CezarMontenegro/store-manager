@@ -1,4 +1,6 @@
-const validateName = async (req, res, next) => {
+const rescue = require('express-rescue');
+
+const validateName = rescue(async (req, res, next) => {
   const { name } = req.body;
 
   if (!name) {
@@ -12,9 +14,9 @@ if (name.length < 5) {
     throw err;
 }
   next();
-};
+});
 
-const validateQuantity = async (req, res, next) => {
+const validateQuantity = rescue(async (req, res, next) => {
   const { quantity } = req.body;
 
   if (!quantity) {
@@ -30,7 +32,7 @@ const validateQuantity = async (req, res, next) => {
   }
 
   next();
-};
+});
 
 module.exports = {
   validateName,
