@@ -18,6 +18,7 @@ sales.get('/:id', rescue(async (req, res) => {
 }));
 
 sales.post('/', middlewares.validateProductIdArray, middlewares.validateQuantityArray,
+  middlewares.isProductIdValid,
  rescue(async (req, res) => {
   const { body } = req;
 

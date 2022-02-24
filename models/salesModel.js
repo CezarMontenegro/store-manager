@@ -55,6 +55,14 @@ const createSale = async () => {
   return id.insertId;
 };
 
+const getByProductId = async (id) => {
+  const [result] = await connection.execute(
+    'SELECT id FROM StoreManager.products WHERE id = ?', [id],
+  );
+
+  return result;
+};
+
 const createSaleProduct = async (body) => {
   const id = await createSale();
 

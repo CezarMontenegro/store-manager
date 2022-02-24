@@ -1,4 +1,5 @@
 const rescue = require('express-rescue');
+const salesModel = require('../models/salesModel');
 
 const validateName = rescue(async (req, res, next) => {
   const { name } = req.body;
@@ -67,9 +68,26 @@ const validateQuantityArray = rescue(async (req, res, next) => {
   next();
 });
 
+const isProductIdValid = (req, res, next) => {
+  const { body } = req;
+
+  body.forEach(async (object) => {
+    if (!object.product_id || object.product_id === undefined) {
+      return res.status(400).json({ message: '"product_id" is required' });
+    }
+    const productId = await salesModel.getByProductId(object.product_id);
+
+    if (!productId.length) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+  });
+  return next();
+};
+
 module.exports = {
   validateName,
   validateQuantity,
   validateProductIdArray,
   validateQuantityArray,
+  isProductIdValid,
 };
