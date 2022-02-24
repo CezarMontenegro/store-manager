@@ -34,7 +34,42 @@ const validateQuantity = rescue(async (req, res, next) => {
   next();
 });
 
+const validateProductIdArray = rescue(async (req, res, next) => {
+  const { body } = req;
+
+  body.forEach((obj) => {
+    if (!obj.productId) {
+      const err = new Error('ProductId is required');
+      err.status = 404;
+      throw err;
+    }
+  });
+
+  next();
+});
+
+const validateQuantityArray = rescue(async (req, res, next) => {
+  const { body } = req;
+
+  body.forEach((obj) => {
+    if (!obj.quantity) {
+      const err = new Error('"quantity" is required');
+      err.status = 400;
+      throw err;
+    }
+    if (obj.quantity <= 0) {
+      const err = new Error('"quantity" must be greater than or equal to 1');
+      err.status = 422;
+      throw err;
+    }
+  });
+
+  next();
+});
+
 module.exports = {
   validateName,
   validateQuantity,
+  validateProductIdArray,
+  validateQuantityArray,
 };
