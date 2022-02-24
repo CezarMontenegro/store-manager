@@ -12,15 +12,20 @@ const getAll = async () => {
     ON StoreManager.sales_products.sale_id = StoreManager.sales.id;`,
   );
 
-  return result;
+  const formatResult = result.map((obj) => ({
+    saleId: obj.sale_id,
+    date: obj.date,
+    productId: obj.product_id,
+    quantity: obj.quantity,
+
+  }));
+
+  return formatResult;
 };
 
 const getById = async (id) => {
   const [result] = await connection.execute(
-    `SELECT 
-      sales.date,
-      sales_products.product_id,
-      sales_products.quantity
+    `SELECT sales.date, sales_products.product_id, sales_products.quantity
     FROM StoreManager.sales_products AS sales_products
     INNER JOIN StoreManager.sales AS sales
     ON StoreManager.sales_products.sale_id = StoreManager.sales.id
@@ -33,7 +38,13 @@ const getById = async (id) => {
     throw err;
   }
 
-  return result;
+  const formatResult = result.map((obj) => ({
+    date: obj.date,
+    productId: obj.product_id,
+    quantity: obj.quantity,
+  }));
+
+  return formatResult;
 };
 
 module.exports = {
