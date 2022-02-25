@@ -4,10 +4,13 @@ const getAll = () => salesModel.getAll();
 
 const getById = async (id) => salesModel.getById(id);
 
-const create = async (body) => salesModel.createSaleProduct(body);
+const create = async (body) => salesModel.create(body);
+
+const update = async (productId, quantity, id) => salesModel.update(productId, quantity, id);
 
 module.exports = {
   getAll,
   getById,
   create,
+  update,
 };

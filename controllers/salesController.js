@@ -17,14 +17,29 @@ sales.get('/:id', rescue(async (req, res) => {
   res.status(200).json(result);
 }));
 
-sales.post('/', middlewares.validateProductIdArray, middlewares.validateQuantityArray,
-  middlewares.isProductIdValid,
- rescue(async (req, res) => {
-  const { body } = req;
+sales.post('/',
+  middlewares.validateProductIdArray,
+  middlewares.validateQuantityArray,
+  rescue(async (req, res) => {
+    const { body } = req;
 
-  const result = await salesServices.create(body);
+    const result = await salesServices.create(body);
 
-  res.status(201).json(result);
+    res.status(201).json(result);
 }));
+
+sales.put('/:id',
+  middlewares.validateQuantityArray,
+  middlewares.validateProductIdArray,
+  middlewares.validateSaleId,
+  rescue(async (req, res) => {
+    const { body } = req;
+    console.log(body);
+    const { id } = req.params;
+    console.log('2', body[0].productId, body[0].quantity, id);
+    const result = await salesServices.update(body[0].productId, body[0].quantity, id);
+
+    res.status(200).json(result);
+  }));
 
 module.exports = sales;

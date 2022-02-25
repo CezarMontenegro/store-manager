@@ -63,7 +63,7 @@ const getByProductId = async (id) => {
   return result;
 };
 
-const createSaleProduct = async (body) => {
+const create = async (body) => {
   const id = await createSale();
 
   const newSaleProduct = body.map((obj) => [id, obj.productId, obj.quantity]);
@@ -77,10 +77,30 @@ const createSaleProduct = async (body) => {
     id,
     itemsSold: body,
   };
-}; 
+};
+
+const update = async (productId, quantity, id) => {
+  console.log(productId, quantity, id);
+  await connection.execute(
+    'UPDATE StoreManager.sales_products SET product_id = ?, quantity = ? WHERE sale_id = ?;',
+    [productId, quantity, id],
+  );
+
+  return {
+    saleId: id,
+    itemUpdated: [
+      {
+        productId,
+        quantity,
+      },
+    ],
+  };
+};
 
 module.exports = {
   getAll,
   getById,
-  createSaleProduct,
+  create,
+  getByProductId,
+  update,
 };

@@ -35,20 +35,6 @@ const validateQuantity = rescue(async (req, res, next) => {
   next();
 });
 
-const validateProductIdArray = rescue(async (req, res, next) => {
-  const { body } = req;
-
-  body.forEach((obj) => {
-    if (!obj.productId) {
-      const err = new Error('ProductId is required');
-      err.status = 404;
-      throw err;
-    }
-  });
-
-  next();
-});
-
 const validateQuantityArray = rescue(async (req, res, next) => {
   const { body } = req;
 
@@ -68,26 +54,66 @@ const validateQuantityArray = rescue(async (req, res, next) => {
   next();
 });
 
-const isProductIdValid = (req, res, next) => {
+const validateProductIdArray = rescue(async (req, res, next) => {
   const { body } = req;
 
   body.forEach(async (object) => {
-    if (!object.product_id || object.product_id === undefined) {
-      return res.status(400).json({ message: '"product_id" is required' });
+    try {
+    if (!object.productId) {
+      const err = new Error('productId is required');
+      err.status = 404;
+      throw err;
     }
-    const productId = await salesModel.getByProductId(object.product_id);
+
+    const productId = await salesModel.getByProductId(object.productId);
 
     if (!productId.length) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
+      const err = new Error('product not found');
+      err.status = 404;
+      throw err; 
+  }
+    } catch (err) { next(err); }
   });
-  return next();
-};
+  next();
+});
+
+const validateSaleId = rescue(async (req, res, next) => {
+  const { id } = req.params;
+
+  const result = await salesModel.getById(id);
+
+  if (result.length === 0) {
+    const err = new Error('sale not fount');
+    err.status = 404;
+    throw err;
+  }
+
+  next();
+});
+
+// const validateProductId = rescue(async (req, res, next) => {
+//   const { productId } = req.body;
+
+//   if (!productId) {
+//     const err = new Error('productId is required');
+//     err.status = 404;
+//     throw err;
+//   }
+
+//   const productIdd = await salesModel.getByProductId(productId);
+
+//     if (productIdd.length === 0) {
+//       const err = new Error('product not found');
+//       err.status = 404;
+//       throw err; 
+//   }
+//   next();
+// });
 
 module.exports = {
   validateName,
   validateQuantity,
   validateProductIdArray,
   validateQuantityArray,
-  isProductIdValid,
+  validateSaleId,
 };
