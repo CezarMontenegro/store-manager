@@ -55,8 +55,8 @@ describe('Testando salesModel', () => {
                 try {
                     await salesModel.getById(12)
                 }
-                catch(err) {
-                    expect(err).to.be.have.property('message');
+                catch(e) {
+                    expect(e).to.be.have.property('message');
                 }
             });
             it('Jogs um erro com a propriedade status 404 se não achar id correspondente', async () => {
@@ -120,9 +120,11 @@ describe('Testando salesModel', () => {
             const insertId = 2
 
             before(() => {
-                sinon.stub(connection, 'execute').resolves([{insertId}]);
+                sinon.stub(connection, 'query').resolves([{insertId}]);
+                sinon.stub(connection, 'execute').resolves([insertId])
             });
             after(() => {
+                connection.query.restore();
                 connection.execute.restore();
             });
 

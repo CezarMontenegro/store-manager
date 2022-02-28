@@ -80,7 +80,6 @@ const create = async (body) => {
 };
 
 const update = async (productId, quantity, id) => {
-  console.log(productId, quantity, id);
   await connection.execute(
     'UPDATE StoreManager.sales_products SET product_id = ?, quantity = ? WHERE sale_id = ?;',
     [productId, quantity, id],

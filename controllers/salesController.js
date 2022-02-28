@@ -36,7 +36,6 @@ sales.put('/:id',
     const { body } = req;
     console.log(body);
     const { id } = req.params;
-    console.log('2', body[0].productId, body[0].quantity, id);
     const result = await salesServices.update(body[0].productId, body[0].quantity, id);
 
     res.status(200).json(result);
