@@ -20,17 +20,16 @@ if (name.length < 5) {
 const validateQuantity = rescue(async (req, res, next) => {
   const { quantity } = req.body;
 
-  if (!quantity) {
+  if (quantity === undefined) {
     const err = new Error('"quantity" is required');
     err.status = 400;
     throw err;
-  }
-
-  if (quantity <= 0) {
+}
+if (parseInt(quantity, 10) <= 0) {
     const err = new Error('"quantity" must be greater than or equal to 1');
     err.status = 422;
     throw err;
-  }
+}
 
   next();
 });
@@ -54,26 +53,18 @@ const validateQuantityArray = rescue(async (req, res, next) => {
   next();
 });
 
+const productIdCheck = (productId) => {
+  if (productId === undefined) {
+      const err = new Error('"productId" is required');
+      err.status = 400;
+      throw err;
+  }
+};
+
 const validateProductIdArray = rescue(async (req, res, next) => {
   const { body } = req;
-
-  body.forEach(async (object) => {
-    try {
-    if (!object.productId) {
-      const err = new Error('productId is required');
-      err.status = 404;
-      throw err;
-    }
-
-    const productId = await salesModel.getByProductId(object.productId);
-
-    if (!productId.length) {
-      const err = new Error('product not found');
-      err.status = 404;
-      throw err; 
-  }
-    } catch (err) { next(err); }
-  });
+  body.map((elem) => productIdCheck(elem.productId));
+  
   next();
 });
 
@@ -90,25 +81,6 @@ const validateSaleId = rescue(async (req, res, next) => {
 
   next();
 });
-
-// const validateProductId = rescue(async (req, res, next) => {
-//   const { productId } = req.body;
-
-//   if (!productId) {
-//     const err = new Error('productId is required');
-//     err.status = 404;
-//     throw err;
-//   }
-
-//   const productIdd = await salesModel.getByProductId(productId);
-
-//     if (productIdd.length === 0) {
-//       const err = new Error('product not found');
-//       err.status = 404;
-//       throw err; 
-//   }
-//   next();
-// });
 
 module.exports = {
   validateName,
